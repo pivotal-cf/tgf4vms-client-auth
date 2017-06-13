@@ -1,0 +1,23 @@
+apply plugin: 'java'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+    }
+}
+
+jar {
+    baseName = 'pcc-client-auth'
+    version = '0.0.1'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.apache.geode', name: 'geode-core', version: '1.1.1'
+}
+
