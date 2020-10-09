@@ -17,11 +17,6 @@ plugins {
     id 'maven-publish'
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
 group = 'io.pivotal.cloudcache'
 version '1.13.0'
 
@@ -31,8 +26,26 @@ repositories {
 }
 
 dependencies {
+    // main
     implementation platform('org.apache.geode:geode-all-bom:1.13.0')
+
     compileOnly 'org.apache.geode:geode-core'
+
+
+    // test
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testImplementation 'org.apache.geode:geode-core'
+
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+test {
+    useJUnitPlatform()
 }
 
 publishing {
