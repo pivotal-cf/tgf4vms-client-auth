@@ -12,26 +12,45 @@
  * limitations under the License.
  */
 
-apply plugin: 'java'
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-    }
+plugins {
+    id 'java-library'
+    id 'maven-publish'
 }
 
-jar {
-    baseName = 'pcc-client-auth'
-    version = '0.0.1'
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
+
+group = 'io.pivotal.cloudcache'
+version '1.13.0'
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
-    compile group: 'org.apache.geode', name: 'geode-core', version: '1.1.1'
+    implementation platform('org.apache.geode:geode-all-bom:1.13.0')
+    compileOnly 'org.apache.geode:geode-core'
 }
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+                project.configurations.compileOnly.allDependencies.each { dep ->
+                    dependenciesNode.appendNode('dependency').with {
+                        it.appendNode('groupId', dep.group)
+                        it.appendNode('artifactId', dep.name)
+                        if (dep.version) it.appendNode('version', dep.version)
+                        it.appendNode('scope', 'provided')
+                    }
+                }
+            }
+        }
+    }
+}
