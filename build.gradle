@@ -13,57 +13,69 @@
  */
 
 plugins {
-    id 'java-library'
-    id 'maven-publish'
+	id 'java-library'
+	id 'maven-publish'
+	id "com.diffplug.spotless" version "5.6.1"
 }
 
 group = 'io.pivotal.cloudcache'
 version '1.13.0'
 
 repositories {
-    mavenLocal()
-    mavenCentral()
+	mavenLocal()
+	mavenCentral()
 }
 
 dependencies {
-    // main
-    implementation platform('org.apache.geode:geode-all-bom:1.13.0')
+	// main
+	implementation platform('org.apache.geode:geode-all-bom:1.13.0')
 
-    compileOnly 'org.apache.geode:geode-core'
+	compileOnly 'org.apache.geode:geode-core'
 
 
-    // test
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testImplementation 'org.apache.geode:geode-core'
+	// test
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+	testImplementation 'org.apache.geode:geode-core'
 
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+	sourceCompatibility = JavaVersion.VERSION_1_8
+	targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 test {
-    useJUnitPlatform()
+	useJUnitPlatform()
 }
 
 publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java
+	publications {
+		maven(MavenPublication) {
+			from components.java
 
-            pom.withXml {
-                def dependenciesNode = asNode().appendNode('dependencies')
-                project.configurations.compileOnly.allDependencies.each { dep ->
-                    dependenciesNode.appendNode('dependency').with {
-                        it.appendNode('groupId', dep.group)
-                        it.appendNode('artifactId', dep.name)
-                        if (dep.version) it.appendNode('version', dep.version)
-                        it.appendNode('scope', 'provided')
-                    }
-                }
-            }
-        }
-    }
+			pom.withXml {
+				def dependenciesNode = asNode().appendNode('dependencies')
+				project.configurations.compileOnly.allDependencies.each { dep ->
+					dependenciesNode.appendNode('dependency').with {
+						it.appendNode('groupId', dep.group)
+						it.appendNode('artifactId', dep.name)
+						if (dep.version) it.appendNode('version', dep.version)
+						it.appendNode('scope', 'provided')
+					}
+				}
+			}
+		}
+	}
+}
+
+spotless {
+	groovyGradle {
+		target '*.gradle'
+		greclipse()
+	}
+
+	java {
+		googleJavaFormat('1.7').aosp()
+	}
 }

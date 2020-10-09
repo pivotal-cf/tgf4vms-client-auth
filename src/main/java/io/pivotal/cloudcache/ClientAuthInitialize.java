@@ -14,40 +14,38 @@
 
 package io.pivotal.cloudcache;
 
+import java.util.Properties;
 import org.apache.geode.distributed.DistributedMember;
 import org.apache.geode.security.AuthInitialize;
 import org.apache.geode.security.AuthenticationFailedException;
 
-import java.util.Properties;
-
 public class ClientAuthInitialize implements AuthInitialize {
-  static final String USERNAME = "security-username";
-  static final String PASSWORD = "security-password";
-  static final String GEMFIRE_SECURITY_USERNAME = "gemfire.security-username";
-  static final String GEMFIRE_SECURITY_PASSWORD = "gemfire.security-password";
+    static final String USERNAME = "security-username";
+    static final String PASSWORD = "security-password";
+    static final String GEMFIRE_SECURITY_USERNAME = "gemfire.security-username";
+    static final String GEMFIRE_SECURITY_PASSWORD = "gemfire.security-password";
 
-  public static AuthInitialize create() {
-    return new ClientAuthInitialize();
-  }
-
-  @Override
-  public Properties getCredentials(final Properties securityProps,
-                                   final DistributedMember server,
-                                   final boolean isPeer) throws AuthenticationFailedException {
-    final String username = System.getProperty(GEMFIRE_SECURITY_USERNAME);
-    if (null == username) {
-      throw new AuthenticationFailedException("Missing " + GEMFIRE_SECURITY_USERNAME);
+    public static AuthInitialize create() {
+        return new ClientAuthInitialize();
     }
 
-    final String password = System.getProperty(GEMFIRE_SECURITY_PASSWORD);
-    if (null == password) {
-      throw new AuthenticationFailedException("Missing " + GEMFIRE_SECURITY_PASSWORD);
+    @Override
+    public Properties getCredentials(
+            final Properties securityProps, final DistributedMember server, final boolean isPeer)
+            throws AuthenticationFailedException {
+        final String username = System.getProperty(GEMFIRE_SECURITY_USERNAME);
+        if (null == username) {
+            throw new AuthenticationFailedException("Missing " + GEMFIRE_SECURITY_USERNAME);
+        }
+
+        final String password = System.getProperty(GEMFIRE_SECURITY_PASSWORD);
+        if (null == password) {
+            throw new AuthenticationFailedException("Missing " + GEMFIRE_SECURITY_PASSWORD);
+        }
+
+        final Properties credentials = new Properties();
+        credentials.put(USERNAME, username);
+        credentials.put(PASSWORD, password);
+        return credentials;
     }
-
-    final Properties credentials = new Properties();
-    credentials.put(USERNAME, username);
-    credentials.put(PASSWORD, password);
-    return credentials;
-  }
-
 }
