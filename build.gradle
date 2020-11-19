@@ -19,7 +19,7 @@ plugins {
 }
 
 group = 'io.pivotal.cloudcache'
-version '1.13.0'
+version "${geodeVersion}"
 
 repositories {
 	mavenLocal()
@@ -28,7 +28,7 @@ repositories {
 
 dependencies {
 	// main
-	implementation platform('org.apache.geode:geode-all-bom:1.13.0')
+	implementation platform("org.apache.geode:geode-all-bom:${geodeVersion}")
 
 	compileOnly 'org.apache.geode:geode-core'
 
